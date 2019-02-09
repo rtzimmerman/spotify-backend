@@ -12,11 +12,11 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const url = `mongodb://${MONGODB_USER}:%40${MONGODB_PASS}@ds058508.mlab.com:58508/playlist-analytics`;
 
 
-function logMessage(){
+function logMessage(formInput, generatedPlaylist, ip){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("playlist-analytics");
-        var logMessage = { ipAddress: "10.0.0.1", ipLocation: "Denver, CO, USA", playlist: {track: 1, trackTitle: "Wild Horses"} };
+        var logMessage = { ipAddress: ip, ipLocation: "Denver, CO, USA", playlist: generatedPlaylist, query: formInput,  };
         dbo.collection("logs").insertOne(logMessage, function(err, res) {
           if (err) throw err;
           console.log("1 log message was inserted");
@@ -27,23 +27,20 @@ function logMessage(){
 
 app.get('/spotify', (request, response) => {
     console.log('backend spotify endpoint hit');
-    logMessage();
+    //logMessage();
     response.send('music');
 });
 
 app.get('/recommendations', (request, response) => {
-   getRecommendtions();
+    var ip = request.header('x-forwarded-for') || request.connection.remoteAddress;
+    console.log(ip);
+   getRecommendtions(request.query, ip);
    response.send('music playlist');
 });
 
-async function getRecommendtions() { 
+async function getRecommendtions(formInput, ip) { 
     let refreshToken = await getRefreshToken();
     console.log('token: ' + refreshToken);
-    const formInput = {
-        genre: 'acoustic',
-        positivity: 10,
-        energy: 10,     
-    }
     const baseUrl = 'https://api.spotify.com/v1/recommendations';
     var httpConfig = {
         headers: {
@@ -67,6 +64,7 @@ async function getRecommendtions() {
     `&target_energy=${formInput.energy / 100.00}`
     , httpConfig)
     .then((response) => {
+        logMessage(formInput, response.data.tracks, ip);
         console.log(response.data.tracks);
     })
     .catch((error) => {
