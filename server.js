@@ -74,10 +74,12 @@ async function getRecommendtions(formInput, ip) {
     `&target_energy=${formInput.energy / 100.00}`
     , httpConfig)
     .then((response) => {
+        console.log('response...');
         logMessage(formInput, response.data.tracks, ip);
         console.log(response.data.tracks);
     })
     .catch((error) => {
+        console.log('spotify api error..');
         console.log(error);
     });
 }
