@@ -9,19 +9,28 @@ var MongoClient = require('mongodb').MongoClient;
 const MONGODB_USER = process.env.MONGODB_USER;
 const MONGODB_PASS = process.env.MONGODB_PASS;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const GEO_API_KEY = process.env.GEO_API_KEY;
 const url = `mongodb://${MONGODB_USER}:%40${MONGODB_PASS}@ds058508.mlab.com:58508/playlist-analytics`;
 
 
 function logMessage(formInput, generatedPlaylist, ip){
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("playlist-analytics");
-        var logMessage = { ipAddress: ip, ipLocation: "Denver, CO, USA", playlist: generatedPlaylist, query: formInput,  };
-        dbo.collection("logs").insertOne(logMessage, function(err, res) {
-          if (err) throw err;
-          console.log("1 log message was inserted");
-          db.close();
+    const baseUrl = 'https://api.ipgeolocation.io/ipgeo';
+    axios.get(`${baseUrl}?apiKey=${GEO_API_KEY}&ip=${ip}`)
+    .then((response) => {
+        console.log(response);
+        MongoClient.connect(url, function(err, db) {
+            if (err) throw err;
+            var dbo = db.db("playlist-analytics");
+            var logMessage = { ipAddress: ip, ipLocation: "Denver, CO, USA", playlist: generatedPlaylist, query: formInput,  };
+            dbo.collection("logs").insertOne(logMessage, function(err, res) {
+              if (err) throw err;
+              console.log("1 log message was inserted");
+              db.close();
+            });
         });
+    }).catch((error) => {
+        console.log('error...');
+        console.log(error);
     });
 }
 
