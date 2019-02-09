@@ -75,6 +75,7 @@ async function getRecommendtions(formInput, ip) {
     , httpConfig)
     .then((response) => {
         console.log('response...');
+        console.log(response);
         logMessage(formInput, response.data.tracks, ip);
         console.log(response.data.tracks);
     })
