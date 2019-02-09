@@ -21,7 +21,7 @@ function logMessage(formInput, generatedPlaylist, ip){
         MongoClient.connect(url, function(err, db) {
             if (err) throw err;
             var dbo = db.db("playlist-analytics");
-            var logMessage = { ipAddress: ip, ipLocation: `${response.data.city}, ${response.data.state_prov}, ${response.data.country_name}`, isp: response.data.isp,  playlist: generatedPlaylist, query: formInput,  };
+            var logMessage = { ipAddress: ip, ipLocation: `${response.data.city}, ${response.data.state_prov}, ${response.data.country_name}`, isp: response.data.isp,  playlist: generatedPlaylist, query: formInput  };
             dbo.collection("logs").insertOne(logMessage, function(err, res) {
               if (err) throw err;
               console.log("1 log message was inserted");
@@ -42,7 +42,7 @@ app.get('/spotify', (request, response) => {
 
 app.get('/recommendations', (request, response) => {
     var ip = request.header('x-forwarded-for') || request.connection.remoteAddress;
-    //ip = ip == '::1' ? '4.4.4.4' : ip;
+    ip = ip == '::1' ? '4.4.4.4' : ip;
     console.log(ip);
    getRecommendtions(request.query, ip);
    response.send('music playlist');
