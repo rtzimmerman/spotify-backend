@@ -21,7 +21,7 @@ function logMessage(formInput, generatedPlaylist, ip){
         MongoClient.connect(url, function(err, db) {
             if (err) throw err;
             var dbo = db.db("playlist-analytics");
-            var logMessage = { ipAddress: ip, ipLocation: "Denver, CO, USA", playlist: generatedPlaylist, query: formInput,  };
+            var logMessage = { ipAddress: ip, ipLocation: `${response.city}, ${response.state_prov}, ${response.country}`, isp: response.isp,  playlist: generatedPlaylist, query: formInput,  };
             dbo.collection("logs").insertOne(logMessage, function(err, res) {
               if (err) throw err;
               console.log("1 log message was inserted");
