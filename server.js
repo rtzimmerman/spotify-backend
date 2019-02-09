@@ -45,7 +45,21 @@ app.get('/recommendations', (request, response) => {
     ip = ip == '::1' ? '4.4.4.4' : ip;
     console.log(ip);
    getRecommendtions(request.query, ip);
-   response.send('music playlist');
+
+   
+    // Website you wish to allow to connect
+    response.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    response.setHeader('Access-Control-Allow-Credentials', true);
+    response.sendStatus(200);
 });
 
 async function getRecommendtions(formInput, ip) { 
