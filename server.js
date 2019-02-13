@@ -131,7 +131,7 @@ async function getRecommendtions(formInput, ip) {
 }
 
 function getRefreshToken() {
-    const refreshUrl = `https://delicat-vin-94241.herokuapp.com/refresh?refresh_token=${REFRESH_TOKEN}`;
+    const refreshUrl = `https://spotify-auth-service.herokuapp.com/refresh?refresh_token=${REFRESH_TOKEN}`;
     return new Promise((resolve, reject) => {
         axios.get(refreshUrl)
         .then((response) => {
