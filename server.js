@@ -130,7 +130,7 @@ async function getRecommendtions(formInput, ip) {
     
 }
 
-function getRefreshToken() {
+async function getRefreshToken() {
     const refreshUrl = `https://spotify-auth-service.herokuapp.com/refresh?refresh_token=${REFRESH_TOKEN}`;
     return new Promise((resolve, reject) => {
         axios.get(refreshUrl)
@@ -147,13 +147,13 @@ function getRefreshToken() {
     // Make a request for list of genres
 }
 
-app.get('/get-genres', (req, res) => {
+app.get('/get-genres', async (req, res) => {
     console.log('getting genres...');
 
     const baseUrl = 'https://api.spotify.com/v1/recommendations/available-genre-seeds';
         var httpConfig = {
             headers: {
-              'Authorization': 'Bearer ' + getRefreshToken(),
+              'Authorization': 'Bearer ' + await getRefreshToken(),
               'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
