@@ -12,7 +12,7 @@
     "axios": "^0.18.0",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
-    "mongodb": "^3.1.12",
+    "mongodb": "^3.1.13",
     "querystring": "^0.2.0"
   }
 }
